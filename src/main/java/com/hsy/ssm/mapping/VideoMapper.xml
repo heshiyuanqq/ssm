@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hsy.ssm.dao.VideoMapper" >
+
+	  <resultMap id="resultMap_video" type="com.hsy.ssm.pojo.Video" >
+		    <id column="videoid" property="videoId" jdbcType="VARCHAR" />
+		    <result column="vdeio_category" property="videoCategoryId" jdbcType="BIGINT" />
+		    <result column="video_instructor" property="videoInstructor" jdbcType="VARCHAR" />
+		    <result column="video_title" property="videoTitle" jdbcType="VARCHAR" />
+		    <result column="video_section_id" property="videoSectionId" jdbcType="BIGINT" />
+		    <result column="video_section_name" property="videoSectionName" jdbcType="VARCHAR" />
+		    <result column="video_url" property="videoUrl" jdbcType="VARCHAR" />
+		    <result column="video_cover_url" property="videoCoverUrl" jdbcType="VARCHAR" />
+		    <result column="video_cover_status" property="videoCoverStatus" jdbcType="TINYINT" />
+		    <result column="video_introduction" property="videoIntroduction" jdbcType="VARCHAR" />
+		    <result column="video_price" property="videoPrice" jdbcType="VARCHAR" />
+		    <result column="loadtime" property="loadtime" jdbcType="TIMESTAMP" />
+		    <result column="video_score" property="videoScore" jdbcType="BIGINT" />
+		    <result column="video_status" property="videoStatus" jdbcType="TINYINT" />
+		    <result column="down_id" property="downId" jdbcType="BIGINT" />
+		    <result column="brow_id" property="browId" jdbcType="BIGINT" />
+		    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+		    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
+		    <result column="video_free_duration" property="videoFreeDuration" jdbcType="BIGINT" />
+		    <result column="video_duration" property="videoDuration" jdbcType="BIGINT" />
+		    <result column="prev_cut_video_id" property="prevCutVideoId" jdbcType="VARCHAR" />
+		    <result column="prev_cut_video_url" property="prevCutVideoUrl" jdbcType="VARCHAR" />
+		    <result column="video_cover_id" property="videoCoverId" jdbcType="VARCHAR" />
+	  </resultMap>
+	  
+	  <insert id="addVideo" parameterType="com.hsy.ssm.pojo.Video">
+	  		INSERT INTO t_videos(videoid,video_title,video_duration,prev_cut_video_id,video_free_duration,video_cover_id)
+  			VALUE(#{videoId},#{videoTitle},#{videoDuration},#{prevCutVideoId},#{videoFreeDuration},#{videoCoverId})
+	  </insert>
+	  
+	  <select id="listVideos"    resultMap="resultMap_video">
+	  		SELECT *  FROM t_videos
+	  </select>
+	  
+	  
+	  
+</mapper>

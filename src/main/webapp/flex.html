@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	div{
+		width: 20px;
+		height: 20px;
+		margin-left: 7px;
+		background-color: orange;
+		border-radius:10px;
+		float: left;
+	}
+</style>
+</head>
+<body>
+		loading
+		<br/>
+		<div id="div1" style="opacity:1.0"></div>
+		<div id="div2" style="opacity:0.9"></div>
+		<div id="div3" style="opacity:0.8"></div>
+		<div id="div4" style="opacity:0.7"></div>
+		<div id="div5" style="opacity:0.6"></div>
+		<div id="div6" style="opacity:0.5"></div>
+		<div id="div7" style="opacity:0.4"></div>
+		<div id="div8" style="opacity:0.3"></div>
+		<div id="div9" style="opacity:0.2"></div>
+		<div id="div10" style="opacity:0.1"></div>
+		<div id="div11" style="opacity:0.0"></div>
+		
+
+</body>
+
+<script type="text/javascript" src="static/jquery-3.0.0.js"></script>
+<script type="text/javascript">
+
+		var opacityArr1= ["1.0","0.9","0.8","0.7","0.6","0.5","0.4","0.3","0.2","0.1","0.0"];
+		var opacityArr2= ["0.0","1.0","0.9","0.8","0.7","0.6","0.5","0.4","0.3","0.2","0.1"];
+		var opacityArr3= ["0.1","0.0","1.0","0.9","0.8","0.7","0.6","0.5","0.4","0.3","0.2"];
+		var opacityArr4= ["0.2","0.1","0.0","1.0","0.9","0.8","0.7","0.6","0.5","0.4","0.3"];
+		var opacityArr5= ["0.3","0.2","0.1","0.0","1.0","0.9","0.8","0.7","0.6","0.5","0.4"];
+		var opacityArr6= ["0.4","0.3","0.2","0.1","0.0","1.0","0.9","0.8","0.7","0.6","0.5"];
+		var opacityArr7= ["0.5","0.4","0.3","0.2","0.1","0.0","1.0","0.9","0.8","0.7","0.6"];
+		var opacityArr8= ["0.6","0.5","0.4","0.3","0.2","0.1","0.0","1.0","0.9","0.8","0.7"];
+		var opacityArr9= ["0.7","0.6","0.5","0.4","0.3","0.2","0.1","0.0","1.0","0.9","0.8"];
+		var opacityArr10=["0.8","0.7","0.6","0.5","0.4","0.3","0.2","0.1","0.0","1.0","0.9"];
+		var opacityArr11=["0.9","0.8","0.7","0.6","0.5","0.4","0.3","0.2","0.1","0.0","1.0"];
+		
+		var len=opacityArr1.length;
+		
+		var index1=1;
+		var index2=1;
+		var index3=1;
+		var index4=1;
+		var index5=1;
+		var index6=1;
+		var index7=1;
+		var index8=1;
+		var index9=1;
+		var index10=1;
+		var index11=1;
+		
+		var div1=$("#div1");
+		var div2=$("#div2");
+		var div3=$("#div3");
+		var div4=$("#div4");
+		var div5=$("#div5");
+		var div6=$("#div6");
+		var div7=$("#div7");
+		var div8=$("#div8");
+		var div9=$("#div9");
+		var div10=$("#div10");
+		var div11=$("#div11");
+		
+		
+		window.setInterval(function(){
+			$("#div1").css("opacity",opacityArr1[index1%len]);
+			$("#div2").css("opacity",opacityArr2[index2%len]);
+			$("#div3").css("opacity",opacityArr3[index3%len]);
+			$("#div4").css("opacity",opacityArr4[index4%len]);
+			$("#div5").css("opacity",opacityArr5[index5%len]);
+			$("#div6").css("opacity",opacityArr6[index6%len]);
+			$("#div7").css("opacity",opacityArr7[index7%len]);
+			$("#div8").css("opacity",opacityArr8[index8%len]);
+			$("#div9").css("opacity",opacityArr9[index9%len]);
+			$("#div10").css("opacity",opacityArr10[index10%len]);
+			$("#div11").css("opacity",opacityArr11[index11%len]);
+			index1++;
+			index2++;
+			index3++;
+			index4++;
+			index5++;
+			index6++;
+			index7++;
+			index8++;
+			index9++;
+			index10++;
+			index11++;
+		}, 400);
+		//黄 粉 黑
+		//黑 黄 粉
+		//粉 黑 黄
+		//黄 粉 黑
+		//黑 黄 粉
+		//粉 黑 黄
+		
+		
+
+</script>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hsy.ssm.dao.VideoCategoryMapper" >
+
+			<!-- FieldTypeComment
+			video_category_id 	int(11) NOT NULL视屏类别名称
+			video_category_name varchar(32) NULL
+			parent_id  			int(11) NULL父类
+			sort_id				int(11) NULL排序
+			createtime			datetime NOT NULL
+			updatetime			datetime NOT NULL
+			is_parent			tinyint(1) NULL收否有子节点
+			
+			
+			private int id;
+			private int pId=-1;//-1表示默认没有父节点
+			private String name;
+			private boolean open=false;//默认关闭
+			private boolean parent=false;//默认没有子节点 -->
+
+	  <resultMap id="resultMap_videoCategory" type="com.hsy.ssm.vo.ZtreeNode" >
+		    <id column="video_category_id" property="id" jdbcType="BIGINT" />
+		    <result column="video_category_name" property="name" jdbcType="VARCHAR" />
+		    <result column="parent_id" property="pId" jdbcType="BIGINT" />
+		    <result column="is_parent" property="parent" jdbcType="TINYINT" />
+	  </resultMap>
+	  
+	  
+	  
+	  <select id="loadCategorys" resultMap="resultMap_videoCategory" >
+		   SELECT  
+		   			video_category_id,
+			        video_category_name,
+			        parent_id,
+			        is_parent
+		   FROM 
+		   			t_video_category;
+	  </select>
+	  
+	  
+	  <insert id="addVideoCategory" useGeneratedKeys="true" keyProperty="id" parameterType="com.hsy.ssm.vo.ZtreeNode">  
+		   INSERT INTO 
+		   				t_video_category(video_category_name,parent_id) 
+		   VALUE(#{name},#{pId})
+	   </insert>  
+	   
+	   <update id="updateVideoCategory"  parameterType="com.hsy.ssm.vo.ZtreeNode">
+	   		UPDATE t_video_category  SET video_category_name=#{name} WHERE video_category_id=#{id};
+	   </update>
+	  
+	  
+</mapper>
