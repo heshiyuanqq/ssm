@@ -10,4 +10,6 @@ public interface VideoMapper {
 
 	ArrayList<Video> listVideos();
 
+	Video getVideoByVideoId(String videoId);
+
 }

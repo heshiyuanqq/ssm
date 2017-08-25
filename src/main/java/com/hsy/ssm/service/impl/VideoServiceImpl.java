@@ -24,4 +24,8 @@ public class VideoServiceImpl implements VideoService{
 		return this.videoMapper.listVideos();
 	}
 
+	public Video getVideoByVideoId(String videoId) {
+		return this.videoMapper.getVideoByVideoId(videoId);
+	}
+
 }

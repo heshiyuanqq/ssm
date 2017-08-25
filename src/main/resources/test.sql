@@ -164,8 +164,8 @@ CREATE TABLE `t_videos` (
   `video_title` varchar(50) NOT NULL COMMENT '视屏名称',
   `video_section_id` int(11) DEFAULT NULL COMMENT '视屏章节编号',
   `video_section_name` varchar(50) DEFAULT NULL COMMENT '视屏章节名称',
-  `video_url` varchar(20) DEFAULT NULL COMMENT '视屏存放地址',
-  `video_cover_url` varchar(20) DEFAULT NULL COMMENT '视屏封面地址',
+  `video_url` varchar(100) DEFAULT NULL COMMENT '视屏存放地址',
+  `video_cover_url` varchar(100) DEFAULT NULL COMMENT '视屏封面图片地址url',
   `video_cover_status` tinyint(4) DEFAULT NULL COMMENT '视屏封面状态。1：上架，2：下架',
   `video_introduction` varchar(100) DEFAULT NULL COMMENT '视屏简介',
   `video_price` int(11) DEFAULT NULL COMMENT '视屏价格',
@@ -178,15 +178,13 @@ CREATE TABLE `t_videos` (
   `updatetime` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT '更新时间',
   `video_free_duration` bigint(10) DEFAULT NULL COMMENT '免费观看时长(秒)',
   `video_duration` bigint(20) DEFAULT NULL COMMENT '视频时长(秒)',
-  `prev_cut_video_id` char(36) DEFAULT NULL COMMENT '前面截取的短视频id',
   `prev_cut_video_url` varchar(100) DEFAULT NULL COMMENT '前面截取的短视频的url',
-  `video_cover_id` char(36) DEFAULT NULL COMMENT '视频封面对应图片的id',
   PRIMARY KEY (`videoid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `t_videos` */
 
-insert  into `t_videos`(`videoid`,`vdeio_category`,`video_instructor`,`video_title`,`video_section_id`,`video_section_name`,`video_url`,`video_cover_url`,`video_cover_status`,`video_introduction`,`video_price`,`loadtime`,`video_score`,`video_status`,`down_id`,`brow_id`,`createtime`,`updatetime`,`video_free_duration`,`video_duration`,`prev_cut_video_id`,`prev_cut_video_url`,`video_cover_id`) values ('992eab05-feab-4ad2-a450-4c5070a376ec',NULL,NULL,'第30课 html5 canvas图像合成实例之随机闪烁的星星_标清.mp4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,1,0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',111,2688,'0237ca50-8fca-4a22-8852-fb64d8f6aba1',NULL,'205423cb-01ef-44e4-819e-d01f92142b6f'),('bb471331-a5d3-447a-a110-dde5bd3a9cb4',NULL,NULL,'美女舍宾教练_标清.mp4',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,1,0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',111,693,'71b158a7-a3af-4d08-9e3b-447fa0805b49',NULL,'2b0b935b-a530-484d-9875-1648993867b1');
+insert  into `t_videos`(`videoid`,`vdeio_category`,`video_instructor`,`video_title`,`video_section_id`,`video_section_name`,`video_url`,`video_cover_url`,`video_cover_status`,`video_introduction`,`video_price`,`loadtime`,`video_score`,`video_status`,`down_id`,`brow_id`,`createtime`,`updatetime`,`video_free_duration`,`video_duration`,`prev_cut_video_url`) values ('0b3d20eb-f96c-4384-a7f6-dc3c6f7edada',NULL,NULL,'第22课 html5 canvas带音效的时钟(上)_高清.mp4',NULL,NULL,'baeac128-aeb8-49e2-bb6b-a87d5a329228.mp4','dee0223d-e0bb-421c-a223-732381a3f3f2.jpg',NULL,NULL,NULL,NULL,100,1,0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',200,12426,'a6492efa-6955-42eb-ad4b-c1ce7e870fc9.mp4'),('5d33eeab-92e3-4358-bdf8-966ed1950e4d',NULL,NULL,'yyy.mp4',NULL,NULL,'c0a2c0ed-1c1f-40a0-b21a-23497cda1a54.mp4','8d81d200-e2a1-4b57-93b1-2962784dae7c.jpg',NULL,NULL,NULL,NULL,100,1,0,0,'1000-01-01 00:00:00','1000-01-01 00:00:00',100,693,'cd63b7ae-ef65-4f60-baab-c5b67b1296de.mp4');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

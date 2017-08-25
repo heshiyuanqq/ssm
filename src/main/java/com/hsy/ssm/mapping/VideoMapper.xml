@@ -23,18 +23,30 @@
 		    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
 		    <result column="video_free_duration" property="videoFreeDuration" jdbcType="BIGINT" />
 		    <result column="video_duration" property="videoDuration" jdbcType="BIGINT" />
-		    <result column="prev_cut_video_id" property="prevCutVideoId" jdbcType="VARCHAR" />
 		    <result column="prev_cut_video_url" property="prevCutVideoUrl" jdbcType="VARCHAR" />
-		    <result column="video_cover_id" property="videoCoverId" jdbcType="VARCHAR" />
 	  </resultMap>
 	  
 	  <insert id="addVideo" parameterType="com.hsy.ssm.pojo.Video">
-	  		INSERT INTO t_videos(videoid,video_title,video_duration,prev_cut_video_id,video_free_duration,video_cover_id)
-  			VALUE(#{videoId},#{videoTitle},#{videoDuration},#{prevCutVideoId},#{videoFreeDuration},#{videoCoverId})
+	  		INSERT INTO t_videos(videoid,video_title,video_duration,prev_cut_video_url,video_free_duration,video_cover_url,video_url)
+  			VALUE(#{videoId},#{videoTitle},#{videoDuration},#{prevCutVideoUrl},#{videoFreeDuration},#{videoCoverUrl},#{videoUrl})
 	  </insert>
 	  
 	  <select id="listVideos"    resultMap="resultMap_video">
-	  		SELECT *  FROM t_videos
+	  		SELECT videoid,video_title,video_cover_url  FROM t_videos
+	  </select>
+	  
+	  <select id="getVideoByVideoId" parameterType="java.lang.String"  resultMap="resultMap_video">
+	  		SELECT  
+	  				videoid,
+	  				video_title,
+	  				video_cover_url,
+	  				video_free_duration,
+	  				video_duration,
+	  				prev_cut_video_url  
+	  		FROM 
+	  				t_videos 
+	  		WHERE 
+	  				videoid=#{videoId}
 	  </select>
 	  
 	  

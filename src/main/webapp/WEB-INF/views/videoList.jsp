@@ -6,6 +6,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Insert title here</title>
+	 <script type="text/javascript" src="${pageContext.request.contextPath}/static/jquery-2.0.3.js"  charset="utf-8"></script>
+	<%-- <script type="text/javascript" src="${pageContext.request.contextPath}/static/easyui/jquery.easyui.min.js"></script>  --%>
 	<style type="text/css">
 		.videoArea{
 			width: 200px;
@@ -34,14 +36,18 @@
 <body style="background-color: gray;">
 		<c:forEach items="${videoList }"  var="video">
 			<div class="videoArea">
-				<img class="coverImg" alt="" src="${pageContext.request.contextPath}\videoCover.do?videoCoverId=${video.videoCoverId}">
+				<img class="coverImg" alt="" src="${pageContext.request.contextPath}/video/coverImg/${video.videoCoverUrl}">
 				<span></span>
 				<p style="width: 200px;" class="shenglue">
 					<nobr>
-						<a href="${pageContext.request.contextPath}/playVideo.do?videoId=${video.videoId}"  title="${video.videoTitle }">${video.videoTitle }</a>
+						<a href="#" title="视频播放"  onclick="parent.openTab(this)" url="${pageContext.request.contextPath}/playVideo.do?videoId=${video.videoId}" title="${video.videoTitle }">${video.videoTitle }</a>
 					</nobr>
 				</p>
 			</div>
 		</c:forEach>
 </body>
+
+<script type="text/javascript">
+		
+</script>
 </html>

@@ -10,4 +10,6 @@ public interface VideoService {
 
 	ArrayList<Video> listVideos();
 
+	Video getVideoByVideoId(String videoId);
+
 }

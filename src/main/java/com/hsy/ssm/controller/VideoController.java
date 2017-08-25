@@ -2,6 +2,7 @@ package com.hsy.ssm.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,12 +34,57 @@ public class VideoController {
 	
 	AtomicInteger atomicInteger = new AtomicInteger(1);  
 	AtomicInteger servletNum = new AtomicInteger(0);  
+	AtomicInteger servletSum = new AtomicInteger(0);  
 	
-	@RequestMapping("/demo.do")
-	public void demo(HttpServletRequest request ,HttpServletResponse response) throws Exception{
-		//return "demo";
-		
-		request.getRequestDispatcher("/video/yyy.mp4").forward(request, response);
+	@RequestMapping("/demo_throw.do")
+	public void demo_throw(HttpServletRequest request ,HttpServletResponse response) throws IOException{
+			//return "demo";
+			
+			int num = servletNum.addAndGet(1);
+			System.out.println("servlet "+num+" begin[当前servlet总数："+servletSum.addAndGet(1)+"]!");
+			FileInputStream fis = new FileInputStream("D:/mp4/yyy.mp4");
+			
+			int len=0;
+			byte[] buffer=new byte[1024];
+			ServletOutputStream sos = response.getOutputStream();
+			while((len=fis.read(buffer))!=-1){
+				  sos.write(buffer, 0, len);
+			}
+			
+			sos.flush();
+			sos.close();
+			fis.close();
+			System.out.println("servlet "+num+" end[当前servlet总数："+servletSum.decrementAndGet()+"]!");
+	}
+	
+	@RequestMapping("/demo_try_catch.do")
+	public void demo_try_catch(HttpServletRequest request ,HttpServletResponse response){
+			int num=0;
+			ServletOutputStream sos =null;
+			FileInputStream fis =null;
+			try {
+					num = servletNum.addAndGet(1);
+					System.out.println("servlet "+num+" begin[当前servlet总数："+servletSum.addAndGet(1)+"]!");
+					fis= new FileInputStream("D:/mp4/yyy.mp4");
+					
+					int len=0;
+					byte[] buffer=new byte[1024];
+					sos= response.getOutputStream();
+					while((len=fis.read(buffer))!=-1){
+							sos.write(buffer, 0, len);
+					}
+			} catch (IOException e) {
+					System.out.println("出错了："+e.getMessage());
+			}finally{
+					try {
+							sos.flush();
+							sos.close();
+							fis.close();
+					} catch (IOException e) {
+							e.printStackTrace();
+					}
+					System.out.println("servlet "+num+" end[当前servlet总数："+servletSum.decrementAndGet()+"]!");
+			}
 	}
 	
 	@RequestMapping("/requestVideo_try_catch.do")
@@ -194,16 +240,20 @@ public class VideoController {
 	
 	
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws Exception {
+	public static void mainq(String[] args) throws IOException {
 		
-				ServerSocket serverSocket = new ServerSocket(8888);
+			/*	ServerSocket serverSocket = new ServerSocket(8888);
 				
 				System.out.println("serverSocket  start in port 8888....");
 				
 				while(true){
 						Socket clientSocket = serverSocket.accept();
 						new ClientServerThread(clientSocket).start();//每接收到一个客户端请求就开启一个专用线程处理
-				}		
+				}		*/
+		
+		
+		FileInputStream fis = new FileInputStream("D:/xxxxxxxxxxxx.txt");
+		System.out.println(fis.skip(100));
 				
 				
 	}
@@ -217,63 +267,50 @@ public class VideoController {
 	
 	@RequestMapping(value = "/uploadVideo.do")  
     public String uploadVideo(@RequestParam(value = "video", required = false) MultipartFile videoFile,String freeTime, HttpServletRequest request, ModelMap model) throws Exception {  
-	        String fullVideoPath = request.getSession().getServletContext().getRealPath("fullVideo");  
-	        String cutVideoPath = request.getSession().getServletContext().getRealPath("cutVideo");  
-	        String videoCoverPath = request.getSession().getServletContext().getRealPath("videoCover");  
-	        System.out.println("fullVideoPath="+fullVideoPath);//D:\install\Tomcat-7.0.6\webapps\ssm\fullVideo
-	        System.out.println("cutVideoPath="+cutVideoPath);
+	        String wholeVideoPath ="D:\\tomcat7\\video\\wholeVideo";
+	        String cutVideoPath = "D:\\tomcat7\\video\\prevCutVideo";
+	        String videoCoverPath ="D:\\tomcat7\\video\\coverImg";
 	        
 	        String videoId=UUID.randomUUID().toString();
-	        String cutVideoId=UUID.randomUUID().toString();
-	        String videoCoverId=UUID.randomUUID().toString();
+	        String videoUrl=UUID.randomUUID().toString()+".mp4";
+	        String cutVideoUrl=UUID.randomUUID().toString()+".mp4";
+	        String videoCoverUrl=UUID.randomUUID().toString()+".jpg";
 	        
 	        String videoFileName = videoFile.getOriginalFilename();  
-	        System.out.println("videoFileName="+videoFileName);
 	        
-	        File folder = new File(fullVideoPath);  
-	        if(!folder.exists()){  
-	        	folder.mkdirs();  
-	        }  
 	      
-	        try {//保存  
-	            	videoFile.transferTo(new File(fullVideoPath, videoId+".mp4"));  
+	        try {//保存  wholeVideo
+	            	videoFile.transferTo(new File(wholeVideoPath, videoUrl));  
 	        } catch (Exception e) {  
 	        		e.printStackTrace();  
 	        }  
 	        
-	        //截取钱几分钟的短视频
+	        //截前几分钟的短视频
 	        VideoFileOperate fileOperate = new VideoFileOperate();
-	        int videoDuration = fileOperate.parseTimeToSecond(fileOperate.getVideoTime(new File(fullVideoPath, videoId+".mp4")));
+	        int videoDuration = fileOperate.parseTimeToSecond(fileOperate.getVideoTime(new File(wholeVideoPath, videoUrl)));
 	        
-	        //添加到数据库
+	        
+	        //组装即将存入数据库的Video实体对象
 	        Video video = new Video();
 	        video.setVideoId(videoId);
+	        video.setVideoUrl(videoUrl);
 	        video.setVideoTitle(videoFileName);
 	        video.setVideoDuration(videoDuration);
 	        
-	        folder = new File(cutVideoPath);
-	        if(!folder.exists()){
-	        		folder.mkdirs();
-	        }
-	        boolean cut=fileOperate.cutVideo(fullVideoPath+"\\"+videoId+".mp4", 
+	        boolean cut=fileOperate.cutVideo(wholeVideoPath+"\\"+videoUrl, 
 	        								 0, 
 	        								 Integer.parseInt(freeTime),
-	        								 cutVideoPath+"\\"+cutVideoId+".mp4");
-	        if(cut){//
-	        	  video.setPrevCutVideoId(cutVideoId);
+	        								 cutVideoPath+"\\"+cutVideoUrl);
+	        if(cut){//截取了开头的短视频文件
+	        	  video.setPrevCutVideoUrl(cutVideoUrl);
 	        	  video.setVideoFreeDuration(Integer.parseInt(freeTime));
 	        }
 	        
-	        //截取视频封面：
-	        folder=new File(videoCoverPath);
-	        if(!folder.exists()){
-        			folder.mkdirs();
-	        }
-	        fileOperate.cutImgInTheSeconds(fullVideoPath+"\\"+videoId+".mp4",
+	        fileOperate.cutImgInTheSeconds(wholeVideoPath+"\\"+videoUrl,
 	        							   "1",
 	        							   null,
-	        							   videoCoverPath+"\\"+videoCoverId+".jpg");
-	        video.setVideoCoverId(videoCoverId);//保存封面图片的地址
+	        							   videoCoverPath+"\\"+videoCoverUrl);
+	        video.setVideoCoverUrl(videoCoverUrl);
 	        
 	        int insertCount=this.videoService.addVideo(video);//真正的存储数据库
 	        
@@ -297,8 +334,11 @@ public class VideoController {
 	
 	
 	@RequestMapping("/playVideo.do")
-	public void playVideo(HttpServletRequest request,HttpServletResponse response,String videoCoverId) throws ServletException, IOException{
-		//todo
+	public String playVideo(String videoId,ModelMap model) throws ServletException, IOException{
+			//根据videoId查询videoprev_cut_video_url播放前video_free_duration
+			Video video=videoService.getVideoByVideoId(videoId);
+			model.addAttribute("video", video);
+			return "videoPlay";
 	}
 	
 }

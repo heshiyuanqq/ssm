@@ -24,9 +24,7 @@ public class Video {
 	      private Date updatetime;
 	      private int videoFreeDuration;
 	      private int videoDuration;
-	      private String prevCutVideoId;
 	      private String prevCutVideoUrl;
-	      private String videoCoverId;
 	      
 		public String getVideoId() {
 			return videoId;
@@ -136,12 +134,6 @@ public class Video {
 		public void setVideoDuration(int videoDuration) {
 			this.videoDuration = videoDuration;
 		}
-		public String getPrevCutVideoId() {
-			return prevCutVideoId;
-		}
-		public void setPrevCutVideoId(String prevCutVideoId) {
-			this.prevCutVideoId = prevCutVideoId;
-		}
 		public String getPrevCutVideoUrl() {
 			return prevCutVideoUrl;
 		}
@@ -153,12 +145,6 @@ public class Video {
 		}
 		public void setVideoFreeDuration(int videoFreeDuration) {
 			this.videoFreeDuration = videoFreeDuration;
-		}
-		public String getVideoCoverId() {
-			return videoCoverId;
-		}
-		public void setVideoCoverId(String videoCoverId) {
-			this.videoCoverId = videoCoverId;
 		}
 		public int getDownId() {
 			return downId;
