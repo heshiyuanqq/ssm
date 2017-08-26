@@ -285,9 +285,9 @@ public class VideoController {
 	        		e.printStackTrace();  
 	        }  
 	        
-	        //截前几分钟的短视频
 	        VideoFileOperate fileOperate = new VideoFileOperate();
-	        int videoDuration = fileOperate.parseTimeToSecond(fileOperate.getVideoTime(new File(wholeVideoPath, videoUrl)));
+	        String videoTime = fileOperate.getVideoTime(new File(wholeVideoPath, videoUrl));
+	        int videoDuration = fileOperate.parseTimeToSecond(videoTime);
 	        
 	        
 	        //组装即将存入数据库的Video实体对象
@@ -339,6 +339,10 @@ public class VideoController {
 			Video video=videoService.getVideoByVideoId(videoId);
 			model.addAttribute("video", video);
 			return "videoPlay";
+	}
+	@RequestMapping("/buyVideo.do")
+	public String buyVideo(String videoId,ModelMap model) throws ServletException, IOException{
+		return "buyVideo";
 	}
 	
 }

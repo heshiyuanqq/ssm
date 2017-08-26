@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Insert title here</title>
 	<link href="${pageContext.request.contextPath}/static/jplayer/jPlayer.css" rel="stylesheet" type="text/css" />
-	<link href="${pageContext.request.contextPath}/static/jplayer/jplayer.pink.flag.min.css" rel="stylesheet" type="text/css" />
+	<link href="${pageContext.request.contextPath}/static/jplayer/jplayer.pink.flag.css" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" src="${pageContext.request.contextPath}/static/jquery-3.0.0.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/static/jplayer/jquery.jplayer.js"></script> 
 	
@@ -14,6 +14,9 @@
 	</style>
 </head>
 <body>
+
+		<h1>${video.videoTitle}</h1>
+		<h1>总时长：${video.videoDuration}秒，你只能免费观看前${video.videoFreeDuration}秒，点击<a href="${pageContext.request.contextPath}/buyVideo.do">立即购买！</a></h1>
 		<div id="jp_container" class="jp-video jp-video-270p" role="application" aria-label="media player">
 			<div class="jp-type-single">
 				<div id="jquery_jplayer" class="jp-jplayer"></div>
@@ -22,14 +25,13 @@
 						<button class="jp-video-play-icon" role="button" tabindex="0">play</button>
 					</div>
 					<div class="jp-interface">
-						<div class="jp-progress">
-							<div class="jp-seek-bar">
-								<div class="jp-play-bar"></div>
-							</div>
+						<div id="xxx" class="jp-progress" >
+								<div id="yyy" class="jp-seek-bar">
+										<div class="jp-play-bar"></div>
+								</div>
 						</div>
 						<div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div><!-- 显示当前时间 -->
 						<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div><!-- 显示总时长 -->
-						<!-- <div  id="xxx" style="font-size:10px">103:23:34</div> -->
 						<div class="jp-details">
 							<div class="jp-title" aria-label="title">&nbsp;</div>
 						</div>
@@ -71,13 +73,14 @@
 			var videoFreeDuration="${video.videoFreeDuration}";
 			var videoDuration="${video.videoDuration}";
 			
-			alert("总时长"+videoDuration+"秒，未购买的你只能免费观看前"+videoFreeDuration+"秒！购买吧！");
+			videoDuration=parseInt(videoDuration);
+			
 			
 			prevCutVideoUrl="${pageContext.request.contextPath}/video/prevCutVideo/"+prevCutVideoUrl;
 			videoCoverUrl="${pageContext.request.contextPath}/video/coverImg/"+videoCoverUrl;
 			
 			
-			$("#jquery_jplayer").jPlayer({
+			var player=$("#jquery_jplayer").jPlayer({
 					ready: function () {
 							$(this).jPlayer("setMedia", {
 									title: videoTitle,
@@ -88,16 +91,35 @@
 					play: function() { // To avoid multiple jPlayers playing together.
 							$(this).jPlayer("pauseOthers");
 					},
+					ended: function () {
+						 // $(this).jPlayer("play");//循环播放
+							window.location.href="${pageContext.request.contextPath}/buyVideo.do";//去购买
+					},
 					/* swfPath: "http://jplayer.org/latest/dist/jplayer", */
 					supplied: "webmv, ogv, m4v",
 					cssSelectorAncestor: "#jp_container",
 					globalVolume: true,
 					useStateClassSkin: true,
 					autoBlur: false,
-					smoothPlayBar: true,
+					smoothPlayBar: false,
+					remainingDuration:false,//true:显示剩余时长，否则显示总时长
+					customeShowDuration:videoDuration, //自定义显示出来的总时长
 					keyEnabled: true
 			});
+			
+			
+			
 	});
 		
+		
+		$("#yyy").click(function(event){
+		    event.stopPropagation()
+		});
+		
+		
+		$("#xxx").click(function(){
+			  window.location.href="${pageContext.request.contextPath}/buyVideo.do";
+			
+		});
 </script>
 </html>

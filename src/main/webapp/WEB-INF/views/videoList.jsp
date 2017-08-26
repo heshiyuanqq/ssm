@@ -36,11 +36,11 @@
 <body style="background-color: gray;">
 		<c:forEach items="${videoList }"  var="video">
 			<div class="videoArea">
-				<img class="coverImg" alt="" src="${pageContext.request.contextPath}/video/coverImg/${video.videoCoverUrl}">
+				<img class="coverImg"   title="${video.videoTitle }" alt="" src="${pageContext.request.contextPath}/video/coverImg/${video.videoCoverUrl}">
 				<span></span>
 				<p style="width: 200px;" class="shenglue">
 					<nobr>
-						<a href="#" title="视频播放"  onclick="parent.openTab(this)" url="${pageContext.request.contextPath}/playVideo.do?videoId=${video.videoId}" title="${video.videoTitle }">${video.videoTitle }</a>
+						<a href="#" title="视频播放"  onclick="parent.openTab(this)" url="${pageContext.request.contextPath}/playVideo.do?videoId=${video.videoId}" >${video.videoTitle }</a>
 					</nobr>
 				</p>
 			</div>

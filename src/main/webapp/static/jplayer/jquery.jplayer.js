@@ -1380,7 +1380,6 @@
 				}
 			}, false);
 			mediaElement.addEventListener("durationchange", function() {
-				alert("zzzzzzzzzzzzz");
 				if(entity.gate) {
 					self._getHtmlStatus(mediaElement);//首次将duration由"00:00"置为实际大小
 					self._updateInterface();//怀疑滚动条的更新是在这里弄的？？
@@ -1856,46 +1855,49 @@
 			}
 		},
 		_updateInterface: function() {//这个就是渲染播放条的核心代码，现在注掉了，就不显示了
-					/*if(this.css.jq.seekBar.length) {
-							this.css.jq.seekBar.width(this.status.seekPercent+"%");
+					if(this.css.jq.seekBar.length) {//是否显示进度条的seekBar
+							this.css.jq.seekBar.width(this.status.duration/this.options.customeShowDuration*100+"%");//总是100%
 					}
-					if(this.css.jq.playBar.length) {
+					if(this.css.jq.playBar.length) {//是否显示滚动条的playBar
 							if(this.options.smoothPlayBar) {
 									this.css.jq.playBar.stop().animate({
 											width: this.status.currentPercentAbsolute+"%"
 									}, 250, "linear");
-							} else {
-									this.css.jq.playBar.width(this.status.currentPercentRelative+"%");
+							} else {//暂时显示这个
+								    this.css.jq.playBar.width(this.status.currentPercentRelative+"%");//播放进度：1%----100%
 							}
 					}
 					var currentTimeText = '';
-					if(this.css.jq.currentTime.length) {
+					if(this.css.jq.currentTime.length) {//是否需要显示当前时间
 							currentTimeText = this._convertTime(this.status.currentTime);
 							if(currentTimeText !== this.css.jq.currentTime.text()) {
 									this.css.jq.currentTime.text(this._convertTime(this.status.currentTime));
 							}
 					}
 					var durationText = '',
-						duration = this.status.duration,
-						remaining = this.status.remaining;
-					if(this.css.jq.duration.length) {
+						duration = this.status.duration,//总时长(秒)
+						remaining = this.status.remaining;//剩余时长(秒)
+					if(this.css.jq.duration.length) {//表示是否需要显示总时长(或剩余时间)，即用户是否有提供“<div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>”元素
 							if(typeof this.status.media.duration === 'string') {
 									durationText = this.status.media.duration;
-							} else {
+							} else {//目前走这个！！！
 									if(typeof this.status.media.duration === 'number') {
-											duration = this.status.media.duration;
+										    duration = this.status.media.duration;
 											remaining = duration - this.status.currentTime;
 									}
-									if(this.options.remainingDuration) {
+									if(this.options.remainingDuration) {//显示剩余时长
 											durationText = (remaining > 0 ? '-' : '') + this._convertTime(remaining);
-									} else {
+									} else {//走这个
+										 	if(this.options.customeShowDuration){//自己修改的可以定制化总时长的方法(比如可以欺骗消费者，说如果购买就可以观看总时长为1小时的视频，其实总时长只有1分钟)
+										 			duration=this.options.customeShowDuration;
+										    }
 											durationText = this._convertTime(duration);
 									}
 							}
 							if(durationText !== this.css.jq.duration.text()) {
 									this.css.jq.duration.text(durationText);
 							}
-					}*/
+					}
 		},
 		_convertTime: ConvertTime.prototype.time,
 		_seeking: function() {
