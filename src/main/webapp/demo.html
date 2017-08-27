@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript" src="static/jquery-3.0.0.js"></script>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script type="text/javascript" src="static/jquery-3.0.0.js"></script>
 </head>
 <body>
-	
-	
-	<!--  <video src="http://localhost/ssm/requestVideo_try_catch.do" 
-			controls="controls" 
-			style="width:500px;"
-	</video>
-		  -->
-		 
-	<!-- 	 
-		 <form action="http://localhost:8888" method="post">
-		 	<input type="text" name="name"/><br/>
-		 	<input type="text" name="age"/><br/>
-		 	<button type="submit">提交</button>
-		 </form> -->
+	<video id="video" width="320" height="240" autoplay></video>
+	<button id="snap" class="sexyButton">Snap Photo</button>
+	<canvas id="canvas" width="320" height="240" style="display:none"></canvas>
+	<img id="snapimg" width="320" height="240"></img>
 	
 </body>
-
-<script type="text/javascript">
-		var arr=[2,0,1,2,1,9];
-	
+<script>
+		function uploadPhoto(){//上传拍照的图片
+					var base64Data =$("#snapimg").attr("src");
+					base64Data = base64Data.substr(22);
+					base64Data = base64Data.replace(/\+/g, "%2B"); //对参数中的+号编码，防止丢失
+					
+					$.ajax({ 
+							type:"POST", 
+							url:"${pageContext.request.contextPath}/uploadPhoto.do", 
+							dataType:"json", 
+							data:{img:base64Data},
+							success:function(data){ 
+								
+								alert("上传完毕！");
+							} 
+				     });
+		}
 		
-		arr.map(function(value,index){
+		
+		
+		$(function(){
+				
+					var canvas = $("#canvas");
+					context = canvas.getContext("2d"),
+					video = $("#video");
+					videoObj = { "video": true };
+					
+					var errBack=function(error){
+							alert("Video capture error: ", error.code);	
+					};
+		
+					
+					alert("navigator="+navigator);
+					
+					if (navigator.getUserMedia){
+							alert(navigator.getUserMedia);
+							navigator.getUserMedia(videoObj,function (stream){
+										video.src = stream;
+										video.play();
+								},errBack);
+					}else if (navigator.webkitGetUserMedia){
+							alert(navigator.webkitGetUserMedia);
+							navigator.webkitGetUserMedia(videoObj,function (stream){
+										video.src = window.webkitURL.createObjectURL(stream);
+										video.play();
+								},errBack);
+					}
+		
+					$("#snap").click(function(){
+							context.drawImage(video, 0, 0, 320, 240);
+							var imgData = canvas.toDataURL();
+							$("#snapimg").attr("src",imgData);
+							uploadPhoto();
+					});
 			
-			alert("value="+value+",index="+index);
 		});
-</script>
-
+		
+	</script>
 
 
 </html>

@@ -20,10 +20,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hsy.ssm.pojo.Video;
 import com.hsy.ssm.service.VideoService;
+import com.hsy.ssm.util.Base64ImgUtil;
 import com.hsy.ssm.util.VideoFileOperate;
 
 @Controller
@@ -340,9 +342,25 @@ public class VideoController {
 			model.addAttribute("video", video);
 			return "videoPlay";
 	}
+	
 	@RequestMapping("/buyVideo.do")
 	public String buyVideo(String videoId,ModelMap model) throws ServletException, IOException{
 		return "buyVideo";
+	}
+	
+	@RequestMapping("/h5camera.do")
+	public String h5camera(String videoId,ModelMap model) throws ServletException, IOException{
+		return "h5camera";
+	}
+	
+	
+	@RequestMapping("/uploadPhoto.do")
+	@ResponseBody
+	public boolean uploadPhoto(String img) throws ServletException, IOException{
+			System.out.println(img.length());
+			System.out.println("img="+img);
+			boolean generateImage = Base64ImgUtil.generateImage(img, "D://snap/"+System.currentTimeMillis()+".jpg");
+			return generateImage;
 	}
 	
 }
