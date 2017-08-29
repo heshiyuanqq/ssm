@@ -279,6 +279,9 @@ public class VideoController {
 	        String videoCoverUrl=UUID.randomUUID().toString()+".jpg";
 	        
 	        String videoFileName = videoFile.getOriginalFilename();  
+	        if(!videoFileName.endsWith(".mp4")){
+	        		throw new Exception("不支持的文件格式异常，只支持mp4格式！");
+	        }
 	        
 	      
 	        try {//保存  wholeVideo
@@ -361,6 +364,11 @@ public class VideoController {
 			System.out.println("img="+img);
 			boolean generateImage = Base64ImgUtil.generateImage(img, "D://snap/"+System.currentTimeMillis()+".jpg");
 			return generateImage;
+	}
+	
+	@RequestMapping("/ckplayer.do")
+	public String ckplayer( ) throws ServletException, IOException{
+		return "ckplayer";
 	}
 	
 }

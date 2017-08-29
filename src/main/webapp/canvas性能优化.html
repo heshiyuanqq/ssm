@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+/* 你还在抱怨自己写的canvas demo徘徊在10帧以下吗？
+ * 你还在烦恼打开自己写的应用就听见CUP风扇转吗？
+ 你正在写一个javascript Canvas库吗？那么下面九点就是你必须知道的！ */
+ 
+/* ********************************* 一.预渲染 ******************************************************/
+/*  错误代码： */
+	 var canvas = document.getElementById("myCanvas");
+	 var context = this.canvas.getContext('2d');
+	 var drawAsync = eval(Jscex.compile("async", function () {
+	     while (true) {
+	         drawMario(context);
+	         $await(Jscex.Async.sleep(1000));
+	     }
+	 }))
+	 drawAsync().start();
+	 
+	 
+/* 正确代码： */
+	var canvas = document.getElementById("myCanvas");
+	var context = this.canvas.getContext('2d');
+	var m_canvas = document.createElement('canvas');
+	m_canvas.width = 64;
+	m_canvas.height = 64;
+	var m_context = m_canvas.getContext('2d');
+	drawMario(m_context);
+	var drawAsync = eval(Jscex.compile("async", function () {
+	    while (true) {
+	        context.drawImage(m_canvas, 0, 0);
+	        $await(Jscex.Async.sleep(1000));
+	    }
+	}))
+	drawAsync().start();//这里m_canvas的宽度和高度控制得越小越好。
+	
+	
+	
+/* 	***************************************二.尽量少调用canvasAPI***************************** */
+/*  错误代码： */
+	 for (var i = 0; i < points.length - 1; i++) {
+	       var p1 = points[i];
+	       var p2 = points[i + 1];
+	       context.beginPath();
+	       context.moveTo(p1.x, p1.y);
+	       context.lineTo(p2.x, p2.y);
+	       context.stroke();
+	   } 
+ 
+ 
+/*  正确代码： */
+	 context.beginPath();
+	 for (var i = 0; i < points.length - 1; i++) {
+	     var p1 = points[i];
+	     var p2 = points[i + 1];
+	     context.moveTo(p1.x, p1.y);
+	     context.lineTo(p2.x, p2.y);
+	 }
+	 context.stroke();
+ 
+	 
+/* 	*********************************** 三.尽量少改变CANVAS状态************************ */
+/* 错误代码： */
+	for (var i = 0; i < STRIPES; i++) {
+	    context.fillStyle = (i % 2 ? COLOR1 : COLOR2);
+	    context.fillRect(i * GAP, 0, GAP, 480);
+	} 
+
+/* 正确代码： */
+	context.fillStyle = COLOR1;
+	for (var i = 0; i < STRIPES / 2; i++) {
+	    context.fillRect((i * 2) * GAP, 0, GAP, 480);
+	}
+	context.fillStyle = COLOR2;
+	for (var i = 0; i < STRIPES / 2; i++) {
+	    context.fillRect((i * 2 + 1) * GAP, 0, GAP, 480);
+	}
+	
+	
+/* ********************************	四.重新渲染的范围尽量小 *******************************/
+/*  错误代码： */
+  	context.fillRect(0, 0, canvas.width, canvas.height); 
+  
+/* 正确代码： */
+      context.fillRect(20, 20, 100, 100);
+      
+      
+      
+  /*  ********************************   五.复杂场景使用多层画布************************** */
+      <canvas  width="600" height="400" style="position: absolute; z-index: 0">
+     </canvas>
+     <canvas  width="600" height="400" style="position: absolute; z-index: 1">
+     </canvas>
+     
+     
+/*    *******************************************  六.不要使用阴影 *******************/
+     context.shadowOffsetX = 5;
+     context.shadowOffsetY = 5;
+     context.shadowBlur = 4;
+     context.shadowColor = 'rgba(255, 0, 0, 0.5)';
+     context.fillRect(20, 20, 150, 100);
+     
+     
+     
+     
+   /*  ************************ 七.清除画布(一般情况下：clearRect的性能优于fillRect优于canvas.width = canvas.width;) ********************************/
+     Use: context.clearRect(0, 0, canvas.width, canvas.height);
+     This is the fastest and most descriptive way to clear the entire canvas.
+     Do not use: canvas.width = canvas.width;
+     Resetting canvas.width resets all canvas state (e.g. transformations, lineWidth, strokeStyle, etc.), 
+     it is very slow (compared to clearRect), it doesn't work in all browsers, and it doesn't describe
+     what you are actually trying to do.
+     
+     
+     
+/*     ************************************ 八.像素级别操作尽量用整数 **************************/
+/*      几种取整数的方法： */
+          rounded = (0.5 + somenum) | 0;
+          rounded = ~ ~(0.5 + somenum);
+          rounded = (0.5 + somenum) << 0;
+          
+          
+  /* ********************************   九.使用requestAnimationFrame制作游戏或动画 ****************************/
+          (function () {
+	              var lastTime = 0;
+	              var vendors = ['ms', 'moz', 'webkit', 'o'];
+	              for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+	                 	 window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+	                  	 window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+	              }
+	
+	              if (!window.requestAnimationFrame){
+		                  window.requestAnimationFrame = function (callback, element) {
+			                      var currTime = new Date().getTime();
+			                      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			                      var id = window.setTimeout(function () { callback(currTime + timeToCall); },timeToCall);
+			                      lastTime = currTime + timeToCall;
+			                      return id;
+		                  };
+	              }
+	
+	              if (!window.cancelAnimationFrame){
+		            	  window.cancelAnimationFrame = function (id) {
+		                    	  clearTimeout(id);
+		               	  };
+	              }
+          } ());
+  
+  
+/*     **************************************十.其他 *********************************/
+	     /*      与渲染无关的计算交给worker
+	          复杂的计算交给引擎（自己写，或者用开源的），比如3D、物理
+	          缓存load好的图片，canvas上画canvas,而不是画image */
+	
+</script>
+</html>

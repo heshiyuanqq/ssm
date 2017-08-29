@@ -1856,7 +1856,11 @@
 		},
 		_updateInterface: function() {//这个就是渲染播放条的核心代码，现在注掉了，就不显示了
 					if(this.css.jq.seekBar.length) {//是否显示进度条的seekBar
-							this.css.jq.seekBar.width(this.status.duration/this.options.customeShowDuration*100+"%");//总是100%
+						    if(this.options.customeShowDuration){
+						    		this.css.jq.seekBar.width(this.status.duration/this.options.customeShowDuration*100+"%");//总是100%
+						    }else{
+						    		this.css.jq.seekBar.width(this.status.seekPercent+"%");
+						    }
 					}
 					if(this.css.jq.playBar.length) {//是否显示滚动条的playBar
 							if(this.options.smoothPlayBar) {

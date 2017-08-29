@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<style type="text/css">
+			input#tin{
+			    margin-bottom: 5px;
+			    background-color: #fff;opacity:0.85;8
+			    width:20px;
+			    height:25px; 
+			    border-width: 1;
+			    font-size: 17px; 
+			    color: #000; 
+			    font-weight: 500; 
+			    border-radius: 5px;
+			    cursor:pointer; 
+			}
+			input#bin{
+			    background-color: gray;
+			    width:80; 
+			    height:25; 
+			    border-width: 2; 
+			    font-size: 20px; 
+			    color: #FFFFFF; 
+			    font-weight: 500;
+			    cursor:pointer; 
+			    border-radius: 5px;
+			}
+			canvas#mycanvas{
+			    border:1px solid;
+			    width: 600px;
+			    height: 300px;
+			    margin-top: 5px;
+			    border-radius: 5px;
+			}
+			div#container{
+			    margin-left: 70px;
+			}
+	</style>
+</head>
+<body>
+
+		 <div id="container">
+		        <div>
+		            <p>Input String：
+		                <input  name="string" id="tin" type="text"/>
+		            </p>                    
+		        </div>
+		        <div>
+		            <p> 
+		                <input type="button" onclick="showDemo()"id="bin" value="Show"/>
+		            </p>
+		            <canvas id="canvas"  ></canvas>
+		        </div>
+	     </div>
+</body>
+<script type="text/javascript">
+		var Coordinate_y = 40;
+		var rectObjArr = [];
+		var swapedIndexArr = [];//其实是一个交换过的元素的角标的记录(其实数组一瞬间就排完了，此时只是动画演示重现之前的轨迹)
+		var cons = 0;
+		var index;
+		var numberArr=[20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1];
+		var len=numberArr.length;
+		
+		var canvasWidth=600;
+		var canvasHeight=300;		
+		
+		function initRectObjArr() {
+			    for (var i = 0; i < len; i++) {
+				        var rectObj = {
+							            x: 30 * i,
+							            y: Coordinate_y,
+							            target_x: 30 * i,
+							            target_y: Coordinate_y,
+							            text: numberArr[i]
+								      }
+				        rectObjArr.push(rectObj);
+			    }
+			    insertSort( );
+		}
+		
+		function insertSort( ) {
+			    var j, key, temp;
+			    for (var i=1; i < len; i++) {
+				        j = i;
+				        key = numberArr[i];
+				        while (--j >= 0) {
+					            if (numberArr[j] > key) {
+					            		numberArr[j + 1] = numberArr[j];
+					            		numberArr[j] = key;
+						                swapedIndexArr.push(j);//当数据有交换时，记录下标
+					            } else {
+					               		break;
+					            }
+				        }
+			    }
+			    console.log(numberArr);
+			    console.log(swapedIndexArr);
+		}
+		
+		
+		//坐标更新
+		function updateIndex() {
+			    if (cons > swapedIndexArr.length) {
+			       	 	return;
+			    }
+			    if (cons == 0) {
+				        index = swapedIndexArr[cons];
+				        rectObjArr[index].target_x = rectObjArr[index + 1].x;
+				        rectObjArr[index + 1].target_x = rectObjArr[index].x;
+				        cons += 1;
+			    }
+			    if (rectObjArr[index].x == rectObjArr[index].target_x) {
+				        if (cons == swapedIndexArr.length) {
+					            cons += 1;
+					            return;
+				        }
+				        var tem = rectObjArr[index];
+				        rectObjArr[index] = rectObjArr[index + 1];
+				        rectObjArr[index + 1] = tem;
+				        index = swapedIndexArr[cons];
+				        rectObjArr[index].target_x = rectObjArr[index + 1].x;
+				        rectObjArr[index + 1].target_x = rectObjArr[index].x;
+				        cons += 1;
+			    } else {
+				    	rectObjArr[index].x += 1;
+				    	rectObjArr[index + 1].x -= 1;
+			    }
+		}
+		
+		
+		//绘制图像
+		function render(context) {
+			    context.clearRect(0, 0, canvasWidth, canvasHeight);
+			    for (var i = 0; i < len; i++) {
+				    	var rectObj=rectObjArr[i];
+				        if ((rectObj.x - rectObj.target_x) >= 2 || (rectObj.x - rectObj.target_x) < -2) {
+					            context.fillStyle = "yellow";
+					            context.fillRect(rectObj.x, rectObj.y, 25, 25);
+					            context.fillStyle = "blue";
+					            context.fillText(rectObj.text, rectObj.x + 10, rectObj.y + 15);
+				        } else {
+					            context.strokeStyle = "blue";
+					            context.strokeRect(rectObj.x, rectObj.y, 25, 25);
+					            context.fillStyle = "blue";
+					            context.fillText(rectObj.text, rectObj.x + 10, rectObj.y + 15);
+				        }
+			    }
+			    context.fillText("插入排序", 40, 80);
+		}
+		
+		
+		
+		(function () {
+				initRectObjArr();
+			    var canvas = document.getElementById("canvas");
+			    canvas.width = canvasWidth;
+			    canvas.height =canvasHeight;
+			    var ctx = canvas.getContext("2d");
+				
+			    setInterval(function() {//40ms调用一次函数
+			    				render(ctx);
+			    				updateIndex();
+					  		}, 40);
+		})();
+</script>
+</html>

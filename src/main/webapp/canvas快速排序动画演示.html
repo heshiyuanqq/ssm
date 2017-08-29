@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+		<canvas id="canvas" style="background-color: pink" width="300" height="200"></canvas>
+</body>
+
+<script type="text/javascript">
+		var canvas=document.getElementById("canvas");
+		var ctx=canvas.getContext("2d");
+		
+		var width=300;
+		var height=200;
+		
+		
+		var arr=[];
+		for(var i=0;i<100;i++){
+			arr.push(parseInt(Math.random()*200));
+		}
+		
+		var len=arr.length;
+		
+		
+		
+		window.setTimeout(function(){
+			fastSort(0,arr.length-1);
+		}, 300);
+		
+		
+		function paintArr(){//数组的值为线的高度
+			    ctx.clearRect(0,0,width,height);
+				var x=0
+				for(var i=0;i<len;i++){
+					 var val=arr[i];
+					 ctx.beginPath();
+					 ctx.moveTo(x,height);
+					 ctx.lineTo(x,height-val);
+					 ctx.stroke();
+					 x+=3;
+				}
+		}
+		
+		
+		function fastSort(fromIndex,toIndex){
+			  if(fromIndex>=toIndex){
+				  	return;
+			  }
+			  
+			  var rulerIndex=fromIndex;
+			  var rulerNum=arr[rulerIndex];
+			  
+			  var finalIndexOfRulerNum=0;
+			  var countOfleRulerNum=0;//小与等于标尺数字的数字个数
+			  for(var i=fromIndex+1;i<=toIndex;i++){
+				  	  var currNum=arr[i];
+					  if(currNum<=rulerNum){//当前的数字小与等于比标尺数字
+						  countOfleRulerNum++;
+					  }
+			  }
+			  finalIndexOfRulerNum=countOfleRulerNum+fromIndex;
+			  
+			  //交换rulerIndex和finalIndexOfRulerNum两角标位置处的数字
+			  arr[rulerIndex]=arr[finalIndexOfRulerNum];
+			  arr[finalIndexOfRulerNum]=rulerNum;
+			  
+			  var rightIndex=finalIndexOfRulerNum+1;
+			  for(var i=fromIndex;i<finalIndexOfRulerNum;i++){
+				     if(arr[i]>rulerNum){
+				    	 	for(var j=rightIndex;j<=toIndex;j++){
+					    	 		 rightIndex++;
+					    	 		 if(arr[j]<=rulerNum){
+						    	 			 var tempNum=arr[i];
+						    	 			 arr[i]=arr[j];
+						    	 			 arr[j]=tempNum;
+						    	 			 break;
+					    	 		 }
+				    	 	}
+				     }
+			  }
+			 
+	}
+	
+		
+		 
+</script>
+</html>

@@ -84,7 +84,9 @@
 					ready: function () {
 							$(this).jPlayer("setMedia", {
 									title: videoTitle,
-									m4v: prevCutVideoUrl,
+									//m4v: prevCutVideoUrl,
+									//m4v: "${pageContext.request.contextPath}/video/yyy.mp4",
+									flv: "${pageContext.request.contextPath}/video/tokyoCop.flv",
 									poster: videoCoverUrl
 							});
 					},
@@ -95,15 +97,17 @@
 						 // $(this).jPlayer("play");//循环播放
 							window.location.href="${pageContext.request.contextPath}/buyVideo.do";//去购买
 					},
-					/* swfPath: "http://jplayer.org/latest/dist/jplayer", */
-					supplied: "webmv, ogv, m4v",
+					  swfPath: "${pageContext.request.contextPath}/static/jplayer/jquery.jplayer.swf",
+					supplied: "webmv, ogv, m4v,flv,swf",
+				  	solution: "flash",  
 					cssSelectorAncestor: "#jp_container",
 					globalVolume: true,
 					useStateClassSkin: true,
 					autoBlur: false,
 					smoothPlayBar: false,
 					remainingDuration:false,//true:显示剩余时长，否则显示总时长
-					customeShowDuration:videoDuration, //自定义显示出来的总时长
+					//customeShowDuration:videoDuration, //自定义显示出来的总时长
+					//customeShowDuration:120, //自定义显示出来的总时长
 					keyEnabled: true
 			});
 			

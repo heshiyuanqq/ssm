@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<style type="text/css">
+			*{
+				margin:0px;
+				padding: 0px;
+			}
+	
+			#canvas{
+				background-color: black;
+			}
+	
+	
+	
+			
+			body{
+				overflow: hidden;
+			}
+	</style>
+</head>
+<body>
+		<canvas id="canvas" width="500"  height="300"></canvas>
+
+</body>
+<script type="text/javascript">
+		var canvasEl = document.getElementById('canvas');
+		var ctx = canvasEl.getContext('2d');
+		
+		var mousePos = [0, 0];
+		
+		var nodesNum=100;
+		
+		var nodes = [];
+		var edges = [];
+		
+		var easingFactor = 6;  //缓动因子(必须>=1才能看到效果)
+		var backgroundColor = 'black'; //背景颜色
+		var nodeColor = '#fff'; //点颜色
+		var edgeColor = '#fff'; //边颜色
+		
+		var canvasWidth=500;
+		var canvasHeight=300;
+	     
+	     
+	     function init(){
+	    	  constructNodes();
+	    	  render();  
+	     }
+	     
+	     init();
+	     
+	     
+	    function constructNodes() {
+		        for (var i = 0; i < nodesNum; i++) {
+			            var node = {
+				                drivenByMouse: i == 0,
+				                x: Math.random() * canvasWidth,
+				                y: Math.random() * canvasHeight,
+				                vx: Math.random() * 1 - 0.5,
+				                vy: Math.random() * 1 - 0.5,
+				                radius: Math.random() > 0.9 ? 3 + Math.random() * 3 : 1 + Math.random() * 3
+			            };
+		
+			            nodes.push(node);
+		        }
+	
+		        nodes.forEach(function (node1) {
+			           		nodes.forEach(function (node2) {
+					                if (node1 == node2) {
+					                    return;
+					                }
+					                
+					                var edge = {
+					                        from: node1,
+					                        to: node2
+					                }
+				
+					                addEdge(edge);//注意这里我用了另外一个函数来完成这件事，而没有直接用 edges.push() ，为什么？
+			                });
+		        });
+	   }
+	    
+	    function addEdge(edge) {
+		        var exist = false;
+		        var len=edges.length;;
+		        
+				for(var i=0;i<len;i++){
+						var existEdge=edges[i];
+						 if (existEdge.from == edge.from && existEdge.to == edge.to) {
+			            		exist = true;
+			            		break;
+			            }
+		
+			            if (existEdge.to == edge.from && existEdge.from == edge.to) {
+			            		exist = true;
+			            		break;
+			            }
+				}
+	
+		        if (!exist) {	
+		           		edges.push(edge);
+		        }
+	    }
+	    
+	    function clamp(min, max, value) {
+	            if (value > max) {
+	                	return max;
+	            } else if (value < min) {
+	                	return min;
+	            } else {
+	                	return value;
+	            }
+	    }
+	    
+	    function step() {//运动一次
+		        nodes.forEach(function (node) {
+			            if (node.drivenByMouse) {
+			                	return;
+			            }
+		
+			            node.x += node.vx;
+			            node.y += node.vy;
+		
+			            if (node.x <= 0 || node.x >= canvasWidth) {//运动到边缘开始反向运动
+				            	node.vx *= -1;
+				            	node.x = clamp(0, canvasWidth, node.x)
+			            }
+		
+			            if (node.y <= 0 || node.y >= canvasHeight) {
+				            	node.vy *= -1;
+				            	node.y = clamp(0, canvasHeight, node.y)
+			            }
+		        });
+	
+		        adjustNodeDrivenByMouse();
+		        render();
+		        window.requestAnimationFrame(step);
+	    }
+
+	    function adjustNodeDrivenByMouse() {
+	        	nodes[0].x += (mousePos[0] - nodes[0].x) / easingFactor;
+	       		nodes[0].y += (mousePos[1] - nodes[0].y) / easingFactor;
+	    }
+	/*     这段代码就是遍历粒子，并且更新其状态。根据一个简单的物理公式 s = s + v,每次执行都会 更新到点的下一步的状态。
+	    adjustNodeDrivenByMouse函将第一个点作为鼠标的跟随点，easingFactor为缓动因子可以让点的运动比鼠标运动的稍慢一点。
+	    然后我们要让整个粒子系统连续地运转起来就需要一个timer了，但是十分不提倡大家使用 setInterval，而是尽可能使用 requestAnimationFrame，它能保证你的帧率锁定在当前浏览器的频率下，一般为60HZ。
+
+	    剩下的就是绘制了 */
+
+	    function render() {
+		       
+		 	    ctx.clearRect(0, 0,canvasWidth, canvasHeight);
+		 	    
+		 	    ctx.strokeStyle = edgeColor;
+	
+		        edges.forEach(function (edge) {
+			            var l = lengthOfEdge(edge);
+			            var threshold = canvasWidth / 8;
+		
+			            if (l > threshold) {//过长就不画了
+			               	 	return;
+			            }
+		
+			            ctx.lineWidth = (1.0 - l / threshold) * 2.5;
+			            ctx.globalAlpha = 1.0 - l / threshold;
+			            ctx.beginPath();
+			            ctx.moveTo(edge.from.x, edge.from.y);
+			            ctx.lineTo(edge.to.x, edge.to.y);
+			            ctx.stroke();
+		        });
+		        
+		        ctx.globalAlpha = 1.0;
+		        ctx.fillStyle = nodeColor;
+		        
+		        nodes.forEach(function (node) {
+			            if (node.drivenByMouse) {
+			                	return;
+			            }
+		
+			            ctx.beginPath();
+			            ctx.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
+			            ctx.fill();
+		        });
+	    }
+	
+	
+	    function lengthOfEdge(edge) {
+	        	return Math.sqrt(Math.pow((edge.from.x - edge.to.x), 2) + Math.pow((edge.from.y - edge.to.y), 2));
+	    }
+	    
+	    
+	/*     绘制的时候我们要判断线的长度如果大于某一个值，则不绘制该线了，如果在范围之内粗细，与颜色的透明度都与线的长度相关，点除了第一个鼠标跟随点，其他的画入即可。
+	    最后加入鼠标移动事件，启动定时器：
+ */
+	     window.onmousemove = function (e) {
+		        mousePos[0] = e.clientX;
+		        mousePos[1] = e.clientY;
+	    }
+
+	    window.requestAnimationFrame(step);  
+	/*     大功告成！！ */
+	
+</script>
+</html>

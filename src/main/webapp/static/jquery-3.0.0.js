@@ -6017,7 +6017,6 @@ var getStyles = function( elem ) {
 	} );
 } )();
 
-
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
 		style = elem.style;
