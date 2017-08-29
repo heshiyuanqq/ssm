@@ -11,79 +11,126 @@
 <script type="text/javascript">
 		var canvas=document.getElementById("canvas");
 		var ctx=canvas.getContext("2d");
+		ctx.fillStyle="black"
+		
+		
 		
 		var width=300;
 		var height=200;
-		
+		var len=100;
 		
 		var arr=[];
-		for(var i=0;i<100;i++){
-			arr.push(parseInt(Math.random()*200));
+		var originalArrCopy=[];
+		
+		var trackIndexArr=[];
+		
+		
+		var index=0;//遍历trackIndexArr数组的角标
+		
+		initArr();
+		
+		
+		function initArr(){
+				for(var i=0;i<len;i++){
+					    var val=parseInt(Math.random()*200);
+						arr.push(val);
+						originalArrCopy.push(val);
+				}
 		}
 		
-		var len=arr.length;
-		
-		
-		
-		window.setTimeout(function(){
-			fastSort(0,arr.length-1);
-		}, 300);
-		
-		
-		function paintArr(){//数组的值为线的高度
-			    ctx.clearRect(0,0,width,height);
-				var x=0
-				for(var i=0;i<len;i++){
-					 var val=arr[i];
-					 ctx.beginPath();
-					 ctx.moveTo(x,height);
-					 ctx.lineTo(x,height-val);
-					 ctx.stroke();
-					 x+=3;
+		function render(){
+				if(index<trackIndexArr.length){
+					    ctx.clearRect(0,0,width,height);
+						var trackIndex=trackIndexArr[index];
+						
+						
+						var index1=trackIndex.index1;
+						var index2=trackIndex.index2;
+						
+						
+						var tmpVal=originalArrCopy[index1];
+						originalArrCopy[index1]=originalArrCopy[index2];
+						originalArrCopy[index2]=tmpVal;
+						
+						
+						for(var i=0;i<len;i++){
+							   ctx.beginPath();
+							   ctx.moveTo(i*3,height);
+							   ctx.lineTo(i*3,height-originalArrCopy[i]);
+							   ctx.stroke();
+						}
+						index++;
+						//window.requestAnimationFrame(render);
+						//console.log("index1="+index1+",index2="+index2);
+				}else{
+					  window.clearInterval(interval1);
 				}
 		}
 		
 		
-		function fastSort(fromIndex,toIndex){
-			  if(fromIndex>=toIndex){
-				  	return;
-			  }
-			  
-			  var rulerIndex=fromIndex;
-			  var rulerNum=arr[rulerIndex];
-			  
-			  var finalIndexOfRulerNum=0;
-			  var countOfleRulerNum=0;//小与等于标尺数字的数字个数
-			  for(var i=fromIndex+1;i<=toIndex;i++){
-				  	  var currNum=arr[i];
-					  if(currNum<=rulerNum){//当前的数字小与等于比标尺数字
-						  countOfleRulerNum++;
-					  }
-			  }
-			  finalIndexOfRulerNum=countOfleRulerNum+fromIndex;
-			  
-			  //交换rulerIndex和finalIndexOfRulerNum两角标位置处的数字
-			  arr[rulerIndex]=arr[finalIndexOfRulerNum];
-			  arr[finalIndexOfRulerNum]=rulerNum;
-			  
-			  var rightIndex=finalIndexOfRulerNum+1;
-			  for(var i=fromIndex;i<finalIndexOfRulerNum;i++){
-				     if(arr[i]>rulerNum){
-				    	 	for(var j=rightIndex;j<=toIndex;j++){
-					    	 		 rightIndex++;
-					    	 		 if(arr[j]<=rulerNum){
-						    	 			 var tempNum=arr[i];
-						    	 			 arr[i]=arr[j];
-						    	 			 arr[j]=tempNum;
-						    	 			 break;
-					    	 		 }
-				    	 	}
-				     }
-			  }
-			 
-	}
-	
 		
+		
+		//保存的应该是交换的轨迹
+		
+		function fastSort(fromIndex, toIndex){
+				  if(fromIndex>=toIndex){
+					  	return;
+				  }
+				  
+				  var rulerIndex=fromIndex;
+				  var rulerNum=arr[rulerIndex];
+				  
+				  var finalIndexOfRulerNum=0;
+				  var countOfleRulerNum=0;//小与等于标尺数字的数字个数
+				  for(var i=fromIndex+1;i<=toIndex;i++){
+						  var currNum=arr[i];
+						  if(currNum<=rulerNum){//当前的数字小与等于比标尺数字
+							  countOfleRulerNum++;
+						  }
+				  }
+				  finalIndexOfRulerNum=countOfleRulerNum+fromIndex;
+				  
+				  arr[rulerIndex]=arr[finalIndexOfRulerNum];
+				  arr[finalIndexOfRulerNum]=rulerNum;
+				  
+				  trackIndexArr.push({
+			  			index1:rulerIndex,
+			  			index2:finalIndexOfRulerNum
+			  		});
+	 			   //console.log("index1="+rulerIndex+",index2="+finalIndexOfRulerNum);
+				  
+				  var rightIndex=finalIndexOfRulerNum+1;
+				  for(var i=fromIndex;i<finalIndexOfRulerNum;i++){
+					     if(arr[i]>rulerNum){
+					    	 	for(var j=rightIndex;j<=toIndex;j++){
+						    	 		 rightIndex++;
+						    	 		 if(arr[j]<=rulerNum){
+							    	 			 var tempNum=arr[i];
+							    	 			 arr[i]=arr[j];
+							    	 			 arr[j]=tempNum;
+							    	 			 
+							    	 			trackIndexArr.push({
+		    	 				 					index1:i,
+		    	 				 					index2:j
+		    	 				 				});
+		    	 								// console.log("index1="+i+",index2="+j); 
+							    	 			 break;
+						    	 		 }
+					    	 	}
+					     }
+				  }
+				  fastSort(fromIndex, finalIndexOfRulerNum-1);
+				  fastSort(finalIndexOfRulerNum+1, toIndex);
+		}
+		
+		
+		
+		
+		
+		fastSort(0,len-1);
+		
+		var interval1=window.setInterval(render, 200);
+		//window.requestAnimationFrame(render);
 		 
 </script>
 </html>
