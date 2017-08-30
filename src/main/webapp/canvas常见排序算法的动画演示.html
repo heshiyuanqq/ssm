@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script type="text/javascript" src="static/jquery-3.0.0.js"></script>
+	
+	<style type="text/css">
+			.active{
+				cursor: pointer;
+			}
+	</style>
+</head>
+<body>
+		<button id="btn_initArr" onclick="initArr()" class="active">初始化数组</button>
+		<button class="btn_sortMethod" id="btn_fastSort"   onclick="doFastSort()" disabled="disabled">快速排序</button>
+		<button class="btn_sortMethod" id="btn_bubblingSort" onclick="doBubblingSort()" disabled="disabled">冒泡排序</button>
+		<button class="btn_sortMethod" id="btn_selectSort" onclick="doSelectSort()" disabled="disabled">选择排序</button><br/><br/>
+		
+		<canvas id="canvas" style="background-color: pink" width="300" height="200"></canvas>
+</body>
+
+<script type="text/javascript">
+		var canvas=document.getElementById("canvas");
+		var ctx=canvas.getContext("2d");
+		
+		var width=300;
+		var height=200;
+		var len=100;
+		
+		var interval;
+		
+		var arr=[];
+		var originalArrCopy=[];
+		var trackSwapIndexArr=[];
+		
+		var index=0;//遍历trackSwapIndexArr数组的角标
+		
+		
+		
+		function initArr(){
+				ctx.clearRect(0,0,width,height);
+				
+			    arr=[];
+				originalArrCopy=[];
+				trackSwapIndexArr=[];
+				
+				index=0;//遍历trackSwapIndexArr数组的角标
+			
+				for(var i=0;i<len;i++){
+					    var val=parseInt(Math.random()*200);//初始化数组
+						arr.push(val);
+						originalArrCopy.push(val);
+						
+						ctx.beginPath();//同时将最初的数组渲染到canvas中
+					    ctx.moveTo(i*3,height);
+					    ctx.lineTo(i*3,height-val);
+					    ctx.stroke();
+				}
+				
+			  
+			  $(".btn_sortMethod").removeAttr("disabled");
+			  $(".btn_sortMethod").addClass("active");
+			  
+			  $("#btn_initArr").attr("disabled","disabled");
+			  $("#btn_initArr").removeClass("active");
+		}
+		
+		function render(){
+				if(index<trackSwapIndexArr.length){
+					    ctx.clearRect(0,0,width,height);
+						
+						var index1=trackSwapIndexArr[index++];//01  23  45 
+						var index2=trackSwapIndexArr[index++];
+						
+						var tmpVal=originalArrCopy[index1];
+						originalArrCopy[index1]=originalArrCopy[index2];
+						originalArrCopy[index2]=tmpVal;
+						
+						ctx.strokeStyle="red";
+						
+						ctx.beginPath();
+						ctx.moveTo(index1*3,height);
+						ctx.lineTo(index1*3,height-originalArrCopy[index1]);
+						ctx.stroke();
+						
+						ctx.beginPath();
+						ctx.moveTo(index2*3,height);
+						ctx.lineTo(index2*3,height-originalArrCopy[index2]);
+						ctx.stroke();
+						
+						ctx.strokeStyle="black";
+						for(var i=0;i<len;i++){
+							   if(i!=index1&&i!=index2){
+									   ctx.beginPath();
+									   ctx.moveTo(i*3,height);
+									   ctx.lineTo(i*3,height-originalArrCopy[i]);
+									   ctx.stroke();
+							   }
+						}
+				}else{
+						if(interval){
+							   window.clearInterval(interval);
+							   interval=null;
+							   
+							   ctx.clearRect(0,0,width,height);
+							   ctx.strokeStyle="black";
+							   for(var i=0;i<len;i++){
+									   ctx.beginPath();
+									   ctx.moveTo(i*3,height);
+									   ctx.lineTo(i*3,height-originalArrCopy[i]);
+									   ctx.stroke();
+							   }
+							   
+							   $("#btn_initArr").removeAttr("disabled");
+							   $("#btn_initArr").removeClass("active");
+						}
+				}
+		}
+		
+		
+		function fastSort(fromIndex, toIndex){
+				  if(fromIndex>=toIndex){
+					  	return;
+				  }
+				  
+				  var rulerIndex=fromIndex;
+				  var rulerNum=arr[rulerIndex];
+				  
+				  var finalIndexOfRulerNum=0;
+				  var countOfleRulerNum=0;//小与等于标尺数字的数字个数
+				  for(var i=fromIndex+1;i<=toIndex;i++){
+						  var currNum=arr[i];
+						  if(currNum<=rulerNum){//当前的数字小与等于比标尺数字
+							  countOfleRulerNum++;
+						  }
+				  }
+				  finalIndexOfRulerNum=countOfleRulerNum+fromIndex;
+				  
+				  arr[rulerIndex]=arr[finalIndexOfRulerNum];
+				  arr[finalIndexOfRulerNum]=rulerNum;
+				  
+		  		  trackSwapIndexArr.push(rulerIndex);
+		  		  trackSwapIndexArr.push(finalIndexOfRulerNum);
+				  
+				  var rightIndex=finalIndexOfRulerNum+1;
+				  for(var i=fromIndex;i<finalIndexOfRulerNum;i++){
+					     if(arr[i]>rulerNum){
+					    	 	for(var j=rightIndex;j<=toIndex;j++){
+						    	 		 rightIndex++;
+						    	 		 if(arr[j]<=rulerNum){
+							    	 			 var tempNum=arr[i];
+							    	 			 arr[i]=arr[j];
+							    	 			 arr[j]=tempNum;
+							    	 			 
+		    	 				 				 trackSwapIndexArr.push(i);
+		    	 				 				 trackSwapIndexArr.push(j);
+		    	 				 				
+							    	 			 break;
+						    	 		 }
+					    	 	}
+					     }
+				  }
+				  fastSort(fromIndex, finalIndexOfRulerNum-1);
+				  fastSort(finalIndexOfRulerNum+1, toIndex);
+		}
+		
+		
+		function  bubblingSort(){
+		         for (var i = 0; i < len; i++){    //最多做n-1趟排序
+			            for(var j = 0 ;j < len - i - 1; j++){    //对当前无序区间score[0......length-i-1]进行排序(j的范围很关键，这个范围是在逐步缩小的)
+				               if(arr[j + 1] < arr[j] ){    //把小的值交换到前面
+					                   var temp = arr[j];
+					                   arr[j] = arr[j + 1];
+					                   arr[j + 1] = temp;
+					                   
+					                   trackSwapIndexArr.push(j);
+					                   trackSwapIndexArr.push(j+1);
+				               }
+			            }             
+		         }
+		} 
+		
+		function selectSort(){
+				for(var i = 0; i < len - 1; i++) {// 做第i趟排序
+			            var k = i;
+			            for(var j = k + 1; j < len; j++){// 选最小的记录
+				                if(arr[j] < arr[k]){ 
+				                    	k = j; //记下目前找到的最小值所在的位置
+				                }
+			            }
+			            //在内层循环结束，也就是找到本轮循环的最小的数以后，再进行交换
+			            if(i != k){  //交换a[i]和a[k]
+				                var temp = arr[i];
+				                arr[i] = arr[k];
+				                arr[k] = temp;
+				                
+				                trackSwapIndexArr.push(i);
+				                trackSwapIndexArr.push(k);
+			            }    
+		        }
+		}
+		
+		
+		
+		
+		
+		function doFastSort(){
+			    $(".btn_sortMethod").attr("disabled","disabled");
+			    $(".btn_sortMethod").removeClass("active");
+			
+				fastSort(0,len-1);
+				interval=window.setInterval(render, 200);
+		}
+		
+		
+		function doBubblingSort(){
+				$(".btn_sortMethod").attr("disabled","disabled");
+			    $(".btn_sortMethod").removeClass("active");
+		    
+				bubblingSort();
+				interval=window.setInterval(render, 200);
+		}
+		
+		
+		function  doSelectSort(){
+				$(".btn_sortMethod").attr("disabled","disabled");
+			    $(".btn_sortMethod").removeClass("active");
+				
+			    selectSort();
+			    interval=window.setInterval(render, 200);
+		}
+		
+		
+</script>
+</html>
