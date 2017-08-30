@@ -24,6 +24,7 @@
 <body class="easyui-layout" style="font-size: 20px">
     <div data-options="region:'north'" style="height:120px;background-color: gray;padding-bottom: 0px;">
     		<img alt="" src="${pageContext.request.contextPath}/static/img/logo.jpg" style="height: 100px;width: 200px;"/>
+    		[${sessionScope.loginUser.username }], 欢迎你!</h1>
     </div>
     <div data-options="region:'west'" style="width:220px;padding-top: 0px;background-color: gray">
 	    	<ul id="accordion" class="accordion" style="width: 198px">

@@ -1,16 +1,9 @@
 package com.hsy.ssm.controller;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.hsy.ssm.pojo.User;
 
 /** 
  * 登录认证的控制器 
@@ -22,7 +15,7 @@ public class IndexControl {
 	public String home( ){
 		return "main";
 	}
-	
+	/*
 	@RequestMapping("/demo1.do")
 	public String demo1( ){
 		return "http://www.baidu.com";
@@ -64,5 +57,5 @@ public class IndexControl {
     	
         session.invalidate();  
         return "redirect:loginPage";  
-    }  
+    }  */
 }  

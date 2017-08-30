@@ -13,7 +13,6 @@
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
                         http://www.springframework.org/schema/tx
                         http://www.springframework.org/schema/tx/spring-tx.xsd">  
-    <context:component-scan base-package="com.hsy.ssm" /> <!-- 自动扫描 -->  
    
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> <!-- 引入配置文件 -->  
         <property name="location" value="classpath:jdbc.properties" />  
