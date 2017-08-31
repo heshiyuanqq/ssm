@@ -1,8 +1,12 @@
 package com.hsy.ssm.controller;
 
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.hsy.ssm.service.VideoCategoryService;
 
 
 /** 
@@ -11,9 +15,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller  
 public class IndexControl {  
 	
+	
+	@Resource
+	private VideoCategoryService videoCategoryService;
+	
 	@RequestMapping("/main.do")
 	public String home( ){
 		return "main";
+	}
+	
+	
+	@RequestMapping("/testTransaction.do")
+	public void testTransaction(int a,int b ){
+		System.out.println(a);
+		System.out.println(b);
+		videoCategoryService.addVideoCategory_testTransaction(a,b);
+		
+		
 	}
 	/*
 	@RequestMapping("/demo1.do")

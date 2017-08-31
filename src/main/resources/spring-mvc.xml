@@ -54,6 +54,10 @@
     		<mvc:exclude-mapping path="/logout.do"/>
     		<bean class="com.hsy.ssm.interceptor.LoginInterceptor"></bean>
     	</mvc:interceptor>
+    	<mvc:interceptor>
+    		<mvc:mapping path="/**"/>
+    		<bean class="com.hsy.ssm.interceptor.SetDatasourceNameIntercepter"></bean>
+    	</mvc:interceptor>
     </mvc:interceptors>
     
 </beans>

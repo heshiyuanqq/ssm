@@ -18,21 +18,30 @@
         <property name="location" value="classpath:jdbc.properties" />  
     </bean>  
   
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">  
-        <property name="driverClassName" value="${driver}" />  
-        <property name="url" value="${url}" />  
-        <property name="username" value="${username}" />  
-        <property name="password" value="${password}" />  
-        <property name="initialSize" value="${initialSize}"></property> <!-- 初始化连接大小 -->  
-        <property name="maxActive" value="${maxActive}"></property> <!-- 连接池最大数量 -->  
-        <property name="maxIdle" value="${maxIdle}"></property>  <!-- 连接池最大空闲 -->  
-        <property name="minIdle" value="${minIdle}"></property><!-- 连接池最小空闲 -->    
-        <property name="maxWait" value="${maxWait}"></property> <!-- 获取连接最大等待时间 -->  
+    <bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource"  destroy-method="close">  
+	        <property name="driverClassName" value="${driver}" />  
+	        <property name="url" value="${url}" />  
+	        <property name="username" value="${username}" />  
+	        <property name="password" value="${password}" />  
+	        <property name="initialSize" value="${initialSize}"></property> <!-- 初始化连接大小 -->  
+	        <property name="maxActive" value="${maxActive}"></property> <!-- 连接池最大数量 -->  
+	        <property name="maxIdle" value="${maxIdle}"></property>  <!-- 连接池最大空闲 -->  
+	        <property name="minIdle" value="${minIdle}"></property><!-- 连接池最小空闲 -->    
+	        <property name="maxWait" value="${maxWait}"></property> <!-- 获取连接最大等待时间 -->  
     </bean>  
+    
+    <bean id="dataSourceRouter" class="com.hsy.ssm.databaseUtil.MyRoutingDataSource">
+		      <property name="targetDataSources">
+		            <map>
+		                <entry key="ds1" value-ref="dataSource1" />
+		            </map>
+		      </property>
+		    <!--   <property name="defaultTargetDataSource" ref="druidDataSource" /> -->
+	</bean>
    
     <!--  mybatis-spring-1.2.2.jar中的类 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSourceRouter" />
         <property name="mapperLocations" value="classpath:com/hsy/ssm/mapping/*.xml"></property> <!-- 自动扫描mapping.xml文件 -->  
     </bean>  
    
@@ -44,7 +53,7 @@
   
  	<!--  spring-jdbc-4.1.6.RELEASE.jar中的类 -->
     <bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->  
-        <property name="dataSource" ref="dataSource" />  
+        <property name="dataSource" ref="dataSourceRouter" />  
     </bean>  
     
      <!-- 全注解方式   需加上@Transactional -->  

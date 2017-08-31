@@ -11,5 +11,7 @@ public interface VideoCategoryService {
 	public int addVideoCategory(int parentId, String videoCategoryName);
 
 	public void updateVideoCategory(ZtreeNode videoCategory);
+	
+	public void addVideoCategory_testTransaction( int a,int b);
 
 }
