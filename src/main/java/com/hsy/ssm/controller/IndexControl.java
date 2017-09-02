@@ -3,6 +3,8 @@ package com.hsy.ssm.controller;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,12 +17,18 @@ import com.hsy.ssm.service.VideoCategoryService;
 @Controller  
 public class IndexControl {  
 	
+	private static final Logger logger = LoggerFactory.getLogger(IndexControl.class);
 	
 	@Resource
 	private VideoCategoryService videoCategoryService;
 	
 	@RequestMapping("/main.do")
 	public String home( ){
+		logger.debug("xxxx");
+		logger.info("xxxx");
+		logger.warn("xxxx");
+		logger.error("xxxx");
+		
 		return "main";
 	}
 	
