@@ -44,6 +44,9 @@
 		    	<li id="li_addRootNode" onclick="addNode(1)">添加根节点</li>
 		    	<li id="li_add" onclick="addNode(0)">添加子节点</li>
 		    </ul>
+		    
+		    
+		    <button  onclick="testAjaxCrossDomain()">测试ajax跨域请求kinzo-web的test.do接口</button>
 </body>
 <script type="text/javascript">
 		var ztreeObj;
@@ -199,6 +202,59 @@
 					     });
 	    		}
 	    		hideRightMenu();
+    	}
+    	
+    	
+    	
+    	
+    	
+    	function testAjaxCrossDomain(){
+	    		 $.ajax({ 
+							type:"POST", 
+							url:"http://192.168.2.128:81/kinzo-web/test.do", 
+							dataType:"jsonp", 
+							 jsonp:'callbackparam',
+							callback:'xxxxxxxx',
+							data:{a:1,b:1},
+							success:function(data){ 
+									alert("success");
+									var obj=data[0];
+									for(var attr in obj){
+											alert(attr+"="+obj[attr]);
+									}
+							},
+							error:function(XMLHttpRequest, textStatus, errorThrown){
+									alert("error");
+									alert("XMLHttpRequest.status="+XMLHttpRequest.status);
+							        alert("XMLHttpRequest.readyState="+XMLHttpRequest.readyState);
+							        alert("textStatus="+textStatus);
+							        alert("errorThrown="+errorThrown);
+							}
+			     });
+	    		 
+	    		/*  
+	    		 此时对应的后台代码中是这样的：
+   		 			  @RequestMapping("/test.do")
+   				 	  @ResponseBody
+   				 	  public JSONPObject  tbUserDOList(int a,int b,String callbackparam){
+	   				 		  System.out.println("tbUserDOList");
+	   				 		  TbUserDO tbUserDO = new TbUserDO();
+	   				 		  tbUserDO.setAccountId(1000000000000L);
+	   				 		  tbUserDO.setCreateDate(System.currentTimeMillis());
+	   				 		  tbUserDO.setDataDate(System.currentTimeMillis());
+	   				 		  tbUserDO.setPassword("123456");
+	   				 		  tbUserDO.setSalt("12121");
+	   				 		  tbUserDO.setUserName("heshiyuan");
+	   				 		  tbUserDO.setUserNameStatus("inactive");
+	   				 		  int c=a/b;
+	   				 		  System.out.println("callbackparam="+callbackparam);
+	   				 		  
+	   				 		  ArrayList<TbUserDO> list = new ArrayList<TbUserDO>();
+	   				 		  list.add(tbUserDO);
+	   				 		  JSONPObject jsonpObject = new JSONPObject(callbackparam, list);
+	   				 		  return jsonpObject;
+   				 	  } */
+
     	}
     	
 		
